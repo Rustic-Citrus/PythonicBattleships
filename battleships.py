@@ -78,6 +78,12 @@ def get_occupied_coordinates():
 
 	return occupied_coordinates
 
+def get_forbidden_coordinates():
+
+	forbidden_coordinates = []
+
+	
+
 def get_board():
 	
 	print("=== BOARD ===")
