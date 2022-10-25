@@ -1,3 +1,4 @@
+from pyexpat.errors import XML_ERROR_UNKNOWN_ENCODING
 import pandas as pd
 from tabulate import tabulate
 import string
@@ -80,9 +81,33 @@ def get_occupied_coordinates():
 
 def get_forbidden_coordinates():
 
+	# Currently, this function calculates the forbidden coordinates for a aircraft carrier placed in the direction "up" or "down", but not "left" or "right"
+	
 	forbidden_coordinates = []
 
-	
+	for n in get_occupied_coordinates():
+		
+		x = int(letters.find(n[0]))
+		y = int(n[1:])
+
+		x_protected_area = []
+		y_protected_area = []
+
+		x_new = 0
+		y_new = 0
+
+		for n in range(5):
+			x_new = x + n
+			x_protected_area.append(x_new)
+		
+		for n in range(5):
+			y_new = y + n
+			y_protected_area.append(y_new)
+
+		for n in range(len(x_protected_area)):
+			forbidden_coordinates.append(letters[x_protected_area[n]] + str(y_protected_area[n]))
+
+	return forbidden_coordinates
 
 def get_board():
 	
@@ -562,3 +587,5 @@ def set_ai_positions():
 		coord = row + str(column)
 
 set_ai_positions()
+
+print(get_forbidden_coordinates())
