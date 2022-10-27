@@ -182,9 +182,7 @@ submarines_sunk_player = False
 def play_explosion():
 
 	pathname = str(pathlib.Path(__file__).parent.resolve())
-	explosion_sounds = ["\\\\explosion_03.wav", "\\\\explosion4.wav"]
-	n = random.randint(0, 1)
-	filename = explosion_sounds[n]
+	filename = "\\\\explosion.mp3"
 
 	song = AudioSegment.from_file(pathname + filename)
 
@@ -300,30 +298,30 @@ def fire(coord, attacker="human"):
 	
 		board_defender = board_ai
 
-		if coord in coord_hit_player:
+		# if coord in coord_hit_player:
 
-			print("MISFIRE!")
-			return "misfire"
+		# 	print("MISFIRE!")
+		# 	return "misfire"
 
 	elif attacker.lower() == "ai":
 
 		board_defender = board_player
 
-		if coord in coord_hit_ai:
+		# if coord in coord_hit_ai:
 
-			print("MISFIRE!")
-			return "misfire"
+		# 	print("MISFIRE!")
+		# 	return "misfire"
 
 	if board_defender[x][y] in symbols:
 
 		print("DIRECT HIT!")
 		play_explosion()
 
-		if attacker == "human":
+		if attacker.lower() == "human":
 	
 			try:
 
-				board_defender[x][y] = "X"
+				board_defender[x][y] = "!"
 				board_blank[x][y] = "!"
 				coord_hit_player.append(coord)
 
@@ -332,7 +330,7 @@ def fire(coord, attacker="human"):
 				print("SHOT UNSUCCESSFUL")
 				print(f"{coord} is not a valid coordinate")
 
-		elif attacker == "ai":
+		elif attacker.lower() == "ai":
 
 			try:
 
@@ -353,6 +351,7 @@ def fire(coord, attacker="human"):
 
 			try:
 
+				board_blank[x][y] = "X"
 				board_defender[x][y] = "X"
 				coord_hit_player.append(coord)
 
@@ -1172,6 +1171,7 @@ while game_in_progress == True:
 
 			print("It looks like we already fired on those coordinates, Sir.")
 			coord = input("What coordinates should we fire upon, Admiral? ")
+			fire(coord)
 
 		print("The enemy fleet is returning fire!")
 		row = letters[random.randint(0, 9)]
@@ -1183,6 +1183,7 @@ while game_in_progress == True:
 			row = letters[random.randint(0, 9)]
 			column = random.randint(1, 10)
 			coord = row + str(column)
+			fire(coord, "ai")
 
 		get_board()
 
@@ -1200,6 +1201,7 @@ while game_in_progress == True:
 			row = letters[random.randint(0, 9)]
 			column = random.randint(1, 10)
 			coord = row + str(column)
+			fire(coord, "ai")
 
 		get_board()
 
@@ -1210,6 +1212,7 @@ while game_in_progress == True:
 
 			print("It looks like we already fired on those coordinates, Sir.")
 			coord = input("What coordinates should we fire upon, Admiral? ")
+			fire(coord)
 	
 	# Have any of the computer's ships been sunk?
 
