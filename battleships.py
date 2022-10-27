@@ -1325,7 +1325,7 @@ while game_in_progress == True:
 
 		pyglet.app.run()
 		
-		break
+		game_in_progress = False
 
 	elif ai_score == 5:
 
@@ -1351,6 +1351,6 @@ while game_in_progress == True:
 
 		pyglet.app.run()
 
-		break
+		game_in_progress = False
 
 	turn_counter += 1
