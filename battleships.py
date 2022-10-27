@@ -1,9 +1,9 @@
-from re import S
 import pandas as pd
 from tabulate import tabulate
 import string
 import random
 import warnings
+import pyglet
 
 letters = string.ascii_uppercase
 
@@ -139,6 +139,12 @@ game_initialized = False
 game_in_progress = True
 
 turn_counter = 1
+
+# Keeping scores
+
+player_score = 0
+
+ai_score = 0
 
 # Condition of ai fleet
 
@@ -1024,6 +1030,62 @@ def coin_toss(choice):
 
 	return player_starts
 
+def get_ship_sunk_gif(victorious_player):
+
+	filename = ""
+
+	if victorious_player == "human":
+
+		filename = "battleship_firing.gif"
+
+	elif victorious_player == "ai":
+
+		filename = "battleship_sinking.gif"
+	
+	animation = pyglet.resource.animation(filename)
+	sprite = pyglet.sprite.Sprite(animation)
+
+	win = pyglet.window.Window(width=sprite.width, height=sprite.height)
+
+	green = 0, 1, 0, 1
+	pyglet.gl.glClearColor(*green)
+
+	@win.event
+	
+	def on_draw():
+		
+		win.clear()
+		
+		sprite.draw()
+
+	pyglet.app.run()
+
+def is_ship_present(player, ship):
+
+	is_present = True
+
+	if player == "human":
+
+		board = board_player
+
+	elif player == "ai":
+
+		board = board_ai
+	
+	count = 0
+	
+	for m in board.values():
+    	
+		if ships_player[ship]["symbol"] not in m.values():
+			
+			count += 1
+	
+	if count == 10:
+		
+		is_present = False
+
+	return is_present
+
 while game_initialized == False:
 
 	get_board()
@@ -1071,17 +1133,140 @@ while game_in_progress == True:
 		coord = input("What coordinates should we return fire upon? ")
 		fire(coord)
 	
-	# Have any ships been sunk?
+	# Have any of the computer's ships been sunk?
 
-	if (symbols[ships_player["aircraft_carrier"]["symbol"]] not in board_ai) and (aircraft_carrier_sunk_ai == False):
+	if (is_ship_present("ai", "aircraft_carrier") == False) and (aircraft_carrier_sunk_ai == False):
 
 		print("We've sunk the enemy's aircraft carrier, Admiral!")
 		aircraft_carrier_sunk_ai = True
+		player_score += 1
 
-	elif (symbols[ships_player["aircraft_carrier"]["symbol"]] not in board_player) and (aircraft_carrier_sunk_player == False):
+		get_ship_sunk_gif("human")
+
+	elif (is_ship_present("ai", "destroyer") == False) and (destroyers_sunk_ai == False):
+
+		print("We've sunk both the enemy's destroyers, Admiral!")
+		destroyers_sunk_ai = True
+		player_score += 1
+
+		get_ship_sunk_gif("human")
+
+	elif (is_ship_present("ai", "battleship") == False) and (battleship_sunk_ai == False):
+
+		print("We've sunk the enemy's battleship, Admiral!")
+		battleship_sunk_ai = True
+		player_score += 1
+
+		get_ship_sunk_gif("human")
+
+	elif (is_ship_present("ai", "cruiser") == False) and (cruiser_sunk_ai == False):
+
+		print("We've sunk the enemy's cruiser, Admiral!")
+		cruiser_sunk_ai = True
+		player_score += 1
+
+		get_ship_sunk_gif("human")
+
+
+	elif (is_ship_present("ai", "submarine") == False) and (destroyers_sunk_ai == False):
+
+		print("A direct hit on the last enemy submarine! They've lost both their submarines, Admiral!")
+		submarines_sunk_ai = True
+		player_score += 1
+
+		get_ship_sunk_gif("human")
+
+	# Have any of the player's ships been sunk?
+
+	if (is_ship_present("human", "aircraft_carrier") == False) and (aircraft_carrier_sunk_player == False):
 
 		print("Our aircraft carrier's sinking, Admiral!")
 		aircraft_carrier_sunk_player = True
+		ai_score += 1
+		
+		get_ship_sunk_gif("ai")
+	
+	elif (is_ship_present("human", "battleship") == False) and (battleship_sunk_player == False):
+
+		print("Our battleship is sinking, Admiral!")
+		battleship_sunk_player = True
+		ai_score += 1
+		
+		get_ship_sunk_gif("ai")
+	
+	elif (is_ship_present("human", "cruiser") == False) and (cruiser_sunk_player == False):
+
+		print("Our cruiser's sinking, Admiral!")
+		cruiser_sunk_player = True
+		ai_score += 1
+
+		get_ship_sunk_gif("ai")
+
+	elif (is_ship_present("human", "destroyer") == False) and (destroyers_sunk_player == False):
+
+		print("We've lost both our destroyers, Admiral!")
+		destroyers_sunk_player = True
+		player_score += 1
+
+		get_ship_sunk_gif("ai")
+
+	elif (is_ship_present("human", "submarine") == False) and (submarines_sunk_player == False):
+
+		print("That's our last submarine, Admiral! They've both been sunk")
+		submarines_sunk_player = True
+		ai_score += 1
+
+		get_ship_sunk_gif("ai")
+		
+	# Has either player won the game?
+
+	if player_score == 5:
+
+		print("VICTORY, Admiral! We've sunk the last of the enemy fleet!")
+		
+		animation = pyglet.resource.animation("ve_day.gif")
+		sprite = pyglet.sprite.Sprite(animation)
+
+		win = pyglet.window.Window(width=sprite.width, height=sprite.height)
+
+		green = 0, 1, 0, 1
+		pyglet.gl.glClearColor(*green)
+
+		@win.event
+		
+		def on_draw():
+    		
+			win.clear()
+    		
+			sprite.draw()
+
+		pyglet.app.run()
+		
+		break
+
+	elif ai_score == 5:
+
+		print("DEFEAT, Admiral! It has been an honor to serve with you.")
+
+		animation = pyglet.resource.animation("pearl_harbor.gif")
+		sprite = pyglet.sprite.Sprite(animation)
+
+		win = pyglet.window.Window(width=sprite.width, height=sprite.height)
+
+		green = 0, 1, 0, 1
+		pyglet.gl.glClearColor(*green)
+
+		@win.event
+		
+		def on_draw():
+    		
+			win.clear()
+    		
+			sprite.draw()
+
+		pyglet.app.run()
+
+		break
 
 	turn_counter += 1
 
