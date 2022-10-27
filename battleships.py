@@ -9,7 +9,7 @@ letters = string.ascii_uppercase
 
 directions = ["west", "east", "north", "south"]
 
-board = {
+board_blank = {
 	"A": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
 	"B": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
 	"C": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
@@ -22,11 +22,33 @@ board = {
 	"J": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"}
 }
 
-board_player = board
+board_player = {
+	"A": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"B": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"C": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"D": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"E": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"F": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"G": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"H": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"I": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"J": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"}
+}
 
-board_ai = board
+board_ai = {
+	"A": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"B": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"C": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"D": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"E": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"F": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"G": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"H": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"I": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"},
+	"J": {1: "-", 2: "-", 3: "-", 4: "-", 5: "-", 6: "-", 7: "-", 8: "-", 9: "-", 10: "-"}
+}
 
-ships = {
+ships_player = {
 	"aircraft_carrier": {
 		"on_board": False,
 		"symbol": "A",
@@ -68,15 +90,62 @@ ships = {
 	}
 }
 
-ships_player = ships
+ships_ai = {
+	"aircraft_carrier": {
+		"on_board": False,
+		"symbol": "A",
+		"hits": 0
+	},
+	"battleship": {
+		"on_board": False,
+		"symbol": "B",
+		"hits": 0
+	},
+	"cruiser": {
+		"on_board": False,
+		"symbol": "C",
+		"hits": 0
+	},
+	"destroyer": {
+		"destroyer_one": {
+			"on_board": False,
+			"hits": 0
+		},
+		"destroyer_two": {
+			"on_board": False,
+			"hits": 0
+		},
+		"symbol": "D",
+		"count": 0
+	},
+	"submarine": {
+		"submarine_one": {
+			"on_board": False,
+			"hits": 0
+			},
+		"submarine_two": {
+			"on_board": False,
+			"hits": 0
+			},
+		"symbol": "S",
+		"count": 0
+	}
+}
 
-ships_ai = ships
-
-symbols = [ships["aircraft_carrier"]["symbol"], ships["battleship"]["symbol"], ships["cruiser"]["symbol"], ships["destroyer"]["symbol"], ships["submarine"]["symbol"]]
+symbols = [ships_player["aircraft_carrier"]["symbol"], ships_player["battleship"]["symbol"], ships_player["cruiser"]["symbol"], ships_player["destroyer"]["symbol"], ships_player["submarine"]["symbol"]]
 
 game_initialized = False
 
 game_in_progress = True
+
+turn_counter = 1
+
+aircraft_carrier_sunk_ai = False
+
+battleship_sunk_ai = False
+
+aircraft_carrier_sunk_player = False
+
 
 def get_occupied_coordinates(player="player"):
 
@@ -149,10 +218,12 @@ def get_board(player="human"):
 	elif player.lower() == "ai":
 
 		print("~~~~~~~~~~ ENEMY FLEET ~~~~~~~~~~")
-		df = pd.DataFrame(board_ai)
+		df = pd.DataFrame(board_blank)
 		print(tabulate(df, headers = "keys", tablefmt = "psql"))
 
 def fire(coord, attacker="human"):
+
+	hit = False
 
 	if attacker.lower() == "human":
 	
@@ -168,19 +239,58 @@ def fire(coord, attacker="human"):
 	if board_defender[x][y] in symbols:
 
 		print("DIRECT HIT!")
+		hit = True
 
 	elif board_defender[x][y] == "-":
 
 		print("MISS!")
 
-	try:
+	if attacker == "human" and hit == True:
+	
+		try:
 
-		board_defender[x][y] = "X"
+			board_defender[x][y] = "X"
+			board_blank[x][y] = "!"
 
-	except:
+		except:
 
-		print("SHOT UNSUCCESSFUL")
-		print(f"{coord} is not a valid coordinate")
+			print("SHOT UNSUCCESSFUL")
+			print(f"{coord} is not a valid coordinate")
+
+	elif attacker == "human" and hit == False:
+
+		try:
+
+			board_defender[x][y] = "X"
+			board_blank[x][y] = "X"
+
+		except:
+
+			print("SHOT UNSUCCESSFUL")
+			print(f"{coord} is not a valid coordinate")
+
+	elif attacker == "ai" and hit == False:
+
+		try:
+
+			board_defender[x][y] = "X"
+
+		except:
+
+			print("SHOT UNSUCCESSFUL")
+			print(f"{coord} is not a valid coordinate")
+
+	elif attacker == "ai" and hit == True:
+
+		try:
+
+			board_defender[x][y] = "!"
+
+		except:
+
+			print("SHOT UNSUCCESSFUL")
+			print(f"{coord} is not a valid coordinate")
+
 
 def set_aircraft_carrier(coord, direction, player="player"):
 
@@ -196,7 +306,7 @@ def set_aircraft_carrier(coord, direction, player="player"):
 	
 	if ships_dict["aircraft_carrier"]["on_board"] == True:
 
-		warnings.warn("Invalid coordinate-direction combo")
+		warnings.warn("Ship already deployed")
 		return
 
 	else:
@@ -206,7 +316,7 @@ def set_aircraft_carrier(coord, direction, player="player"):
 			try:
 
 				x = coord[0].upper()
-				y = int(coord[1])
+				y = int(coord[1:])
 
 			except:
 
@@ -283,7 +393,7 @@ def set_battleship(coord, direction, player="player"):
 	
 	if ships_dict["battleship"]["on_board"] == True:
 
-		warnings.warn("Invalid coordinate-direction combo")
+		warnings.warn("Ship already deployed")
 		return
 
 	else:
@@ -293,7 +403,7 @@ def set_battleship(coord, direction, player="player"):
 			try:
 
 				x = coord[0].upper()
-				y = int(coord[1])
+				y = int(coord[1:])
 
 			except:
 
@@ -370,7 +480,7 @@ def set_cruiser(coord, direction, player="player"):
 
 	if ships_dict["cruiser"]["on_board"] == True:
 
-		warnings.warn("Invalid coordinate-direction combo")
+		warnings.warn("Ship already deployed")
 		return
 
 	else:
@@ -380,7 +490,7 @@ def set_cruiser(coord, direction, player="player"):
 			try:
 
 				x = coord[0].upper()
-				y = int(coord[1])
+				y = int(coord[1:])
 
 			except:
 
@@ -457,7 +567,7 @@ def set_destroyer_one(coord, direction, player="player"):
 
 	if ships_dict["destroyer"]["destroyer_one"]["on_board"] == True:
 
-		warnings.warn("Invalid coordinate-direction combo")
+		warnings.warn("Ship already deployed")
 		return
 
 	else:
@@ -467,7 +577,7 @@ def set_destroyer_one(coord, direction, player="player"):
 			try:
 
 				x = coord[0].upper()
-				y = int(coord[1])
+				y = int(coord[1:])
 
 			except:
 
@@ -544,7 +654,7 @@ def set_destroyer_two(coord, direction, player="player"):
 
 	if ships_dict["destroyer"]["destroyer_two"]["on_board"] == True:
 
-		warnings.warn("Invalid coordinate-direction combo")
+		warnings.warn("Ship already deployed")
 		return
 
 	else:
@@ -554,7 +664,7 @@ def set_destroyer_two(coord, direction, player="player"):
 			try:
 
 				x = coord[0].upper()
-				y = int(coord[1])
+				y = int(coord[1:])
 
 			except:
 
@@ -608,7 +718,7 @@ def set_destroyer_two(coord, direction, player="player"):
 					for n in range(2):
 						board_dict[x][count] = ships_dict["destroyer"]["symbol"]
 						count -= 1
-					ships["destroyer"]["destroyer_two"]["on_board"] = True
+					ships_dict["destroyer"]["destroyer_two"]["on_board"] = True
 
 				elif direction.lower() == "south":
 					count = y
@@ -631,7 +741,7 @@ def set_submarine_one(coord, player="player"):
 
 	if ships_dict["submarine"]["submarine_one"]["on_board"] == True:
 
-		warnings.warn("Invalid coordinate-direction combo")
+		warnings.warn("Ship already deployed")
 		return
 
 	else:
@@ -641,7 +751,7 @@ def set_submarine_one(coord, player="player"):
 			try:
 
 				x = coord[0].upper()
-				y = int(coord[1])
+				y = int(coord[1:])
 
 			except:
 
@@ -672,7 +782,7 @@ def set_submarine_two(coord, player="player"):
 
 	if ships_dict["submarine"]["submarine_two"]["on_board"] == True:
 
-		warnings.warn("Invalid coordinate-direction combo")
+		warnings.warn("Ship already deployed")
 		return
 
 	else:
@@ -682,7 +792,7 @@ def set_submarine_two(coord, player="player"):
 			try:
 
 				x = coord[0].upper()
-				y = int(coord[1])
+				y = int(coord[1:])
 
 			except:
 
@@ -714,7 +824,6 @@ def set_ai_positions():
 		row = letters[random.randint(0, 9)]
 		column = random.randint(1, 10)
 		coord = row + str(column)
-		print("SUCCESS #1")
 
 	while ships_ai["battleship"]["on_board"] == False:
 
@@ -724,7 +833,6 @@ def set_ai_positions():
 		row = letters[random.randint(0, 9)]
 		column = random.randint(1, 10)
 		coord = row + str(column)
-		print("SUCCESS #2")
 
 	while ships_ai["cruiser"]["on_board"] == False:
 
@@ -734,7 +842,6 @@ def set_ai_positions():
 		row = letters[random.randint(0, 9)]
 		column = random.randint(1, 10)
 		coord = row + str(column)
-		print("SUCCESS #3")
 
 	while ships_ai["destroyer"]["destroyer_one"]["on_board"] == False:
 
@@ -907,12 +1014,14 @@ while game_initialized == False:
 	print("FLEET DEPLOYED. READY FOR COMBAT.")
 	set_ai_positions()
 	print("AN ENEMY FLEET APPEARS ON THE HORIZON.")
-	choice = input("Heads or tails?")
+	choice = input("Heads or tails? ")
 	player_start = coin_toss(choice)
 	game_initialized = True
 
 while game_in_progress == True:
 
+	print(f"~~~~~~~~~~ TURN #{turn_counter} ~~~~~~~~~~")
+	
 	if player_start == True:
 
 		get_board("ai")
@@ -938,6 +1047,18 @@ while game_in_progress == True:
 		get_board("ai")
 		coord = input("What coordinates should we return fire upon? ")
 		fire(coord)
+	
+	if symbols[ships_player["aircraft_carrier"]["symbol"]] not in board_ai and aircraft_carrier_sunk_ai == False:
+
+		print("We've sunk the enemy's aircraft carrier, Admiral!")
+		aircraft_carrier_sunk_ai = True
+
+	elif symbols[ships_player["aircraft_carrier"]["symbol"]] not in board_player and aircraft_carrier_sunk_player == False:
+
+		print("Our aircraft carrier's sinking, Admiral!")
+		aircraft_carrier_sunk_player = True
+
+	turn_counter += 1
 
 
 
