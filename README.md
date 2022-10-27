@@ -22,7 +22,9 @@ I used a variety of modules in Python to make this work. Here is a complete list
 
 ## Issues
 
-Under the issues tab on the GitHub repository page, I've added some of the bugs that I've come across from my own testing. When I resolve them, I'll update the page.
+Under the Issues tab on the GitHub repository page, I've added some of the bugs that I've come across from my own testing. When I resolve them, I'll update the page.
+
+If you encounter any bugs when you are playing, I encourage you to add them to Issues as well.
 
 ## Future Developments
 
