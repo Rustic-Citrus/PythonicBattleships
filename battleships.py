@@ -248,6 +248,7 @@ def get_board(player="human"):
 def fire(coord, attacker="human"):
 
 	hit = False
+	success = False
 
 	if attacker.lower() == "human":
 	
@@ -264,10 +265,21 @@ def fire(coord, attacker="human"):
 
 		print("DIRECT HIT!")
 		hit = True
+		success = True
 
 	elif board_defender[x][y] == "-":
 
 		print("MISS!")
+		success = True
+
+	elif board_defender[x][y] == "X" and hit == False:
+
+		print("MISFIRE!")
+		success = False
+
+	if success == False:
+
+		return success
 
 	if attacker == "human" and hit == True:
 	
@@ -314,6 +326,9 @@ def fire(coord, attacker="human"):
 
 			print("SHOT UNSUCCESSFUL")
 			print(f"{coord} is not a valid coordinate")
+		
+	return success
+
 
 def set_aircraft_carrier(coord, direction, player="player"):
 
@@ -1111,11 +1126,23 @@ while game_in_progress == True:
 		coord = input("What coordinates should we fire upon, Admiral? ")
 		fire(coord)
 
+		while fire(coord) == False:
+
+			print("It looks like we already fired on those coordinates, Sir.")
+			coord = input("What coordinates should we fire upon, Admiral? ")
+
 		print("The enemy fleet is returning fire!")
 		row = letters[random.randint(0, 9)]
 		column = random.randint(1, 10)
 		coord = row + str(column)
 		fire(coord, "ai")
+
+		while fire(coord, "ai") == False:
+
+			row = letters[random.randint(0, 9)]
+			column = random.randint(1, 10)
+			coord = row + str(column)
+
 		get_board()
 
 	# Computer goes first
@@ -1126,11 +1153,23 @@ while game_in_progress == True:
 		row = letters[random.randint(0, 9)]
 		column = random.randint(1, 10)
 		coord = row + str(column)
-		fire(coord, "ai")
+		
+		while fire(coord, "ai") == False:
+
+			row = letters[random.randint(0, 9)]
+			column = random.randint(1, 10)
+			coord = row + str(column)
+
 		get_board()
 
 		get_board("ai")
 		coord = input("What coordinates should we return fire upon? ")
+
+		while fire(coord) == False:
+
+			print("It looks like we already fired on those coordinates, Sir.")
+			coord = input("What coordinates should we fire upon, Admiral? ")
+
 		fire(coord)
 	
 	# Have any of the computer's ships been sunk?
