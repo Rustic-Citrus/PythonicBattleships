@@ -4,6 +4,9 @@ import string
 import random
 import warnings
 import pyglet
+from pydub import AudioSegment
+from pydub.playback import play
+import pathlib
 
 letters = string.ascii_uppercase
 
@@ -170,6 +173,43 @@ destroyers_sunk_player = False
 
 submarines_sunk_player = False
 
+def play_explosion():
+
+	pathname = str(pathlib.Path(__file__).parent.resolve())
+	explosion_sounds = ["\\\\explosion_03.wav", "\\\\explosion4.wav"]
+	n = random.randint(0, 1)
+	filename = explosion_sounds[n]
+
+	song = AudioSegment.from_file(pathname + filename)
+
+	play(song)
+
+def play_splash():
+
+	pathname = str(pathlib.Path(__file__).parent.resolve())
+	filename = "\\\\big_water_splash.wav"
+
+	song = AudioSegment.from_file(pathname + filename)
+
+	play(song)
+
+def play_victory_song():
+
+	pathname = str(pathlib.Path(__file__).parent.resolve())
+	filename = "\\\\victory_fanfare.wav"
+
+	song = AudioSegment.from_file(pathname + filename)
+
+	play(song)
+
+def play_defeat_song():
+
+	pathname = str(pathlib.Path(__file__).parent.resolve())
+	filename = "\\\\epic_heroic_orchestral_dramatic.mp3"
+
+	song = AudioSegment.from_file(pathname + filename)
+
+	play(song)
 
 def get_occupied_coordinates(player="player"):
 
@@ -266,11 +306,13 @@ def fire(coord, attacker="human"):
 		print("DIRECT HIT!")
 		hit = True
 		success = True
+		play_explosion()
 
 	elif board_defender[x][y] == "-":
 
 		print("MISS!")
 		success = True
+		play_splash()
 
 	elif board_defender[x][y] == "X" and hit == False:
 
@@ -1262,6 +1304,8 @@ while game_in_progress == True:
 	if player_score == 5:
 
 		print("VICTORY, Admiral! We've sunk the last of the enemy fleet!")
+
+		play_victory_song()
 		
 		animation = pyglet.resource.animation("ve_day.gif")
 		sprite = pyglet.sprite.Sprite(animation)
@@ -1287,6 +1331,8 @@ while game_in_progress == True:
 
 		print("DEFEAT, Admiral! It has been an honor to serve with you.")
 
+		play_defeat_song()
+
 		animation = pyglet.resource.animation("pearl_harbor.gif")
 		sprite = pyglet.sprite.Sprite(animation)
 
@@ -1308,6 +1354,3 @@ while game_in_progress == True:
 		break
 
 	turn_counter += 1
-
-
-
