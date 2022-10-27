@@ -140,11 +140,29 @@ game_in_progress = True
 
 turn_counter = 1
 
+# Condition of ai fleet
+
 aircraft_carrier_sunk_ai = False
 
 battleship_sunk_ai = False
 
+cruiser_sunk_ai = False
+
+destroyers_sunk_ai = False
+
+submarines_sunk_ai = False
+
+# Condition of player fleet
+
 aircraft_carrier_sunk_player = False
+
+battleship_sunk_player = False
+
+cruiser_sunk_player = False
+
+destroyers_sunk_player = False
+
+submarines_sunk_player = False
 
 
 def get_occupied_coordinates(player="player"):
@@ -290,7 +308,6 @@ def fire(coord, attacker="human"):
 
 			print("SHOT UNSUCCESSFUL")
 			print(f"{coord} is not a valid coordinate")
-
 
 def set_aircraft_carrier(coord, direction, player="player"):
 
@@ -1011,9 +1028,11 @@ while game_initialized == False:
 
 	get_board()
 	set_player_positions()
-	print("FLEET DEPLOYED. READY FOR COMBAT.")
+	print("It's a quiet day. Almost too quiet.")
+	print("Admiral, there's a ship on the horizon!")
 	set_ai_positions()
-	print("AN ENEMY FLEET APPEARS ON THE HORIZON.")
+	print("It's an enemy fleet!")
+	print("Flip a coin to see whether you go first.")
 	choice = input("Heads or tails? ")
 	player_start = coin_toss(choice)
 	game_initialized = True
@@ -1022,6 +1041,8 @@ while game_in_progress == True:
 
 	print(f"~~~~~~~~~~ TURN #{turn_counter} ~~~~~~~~~~")
 	
+	# Player goes first
+
 	if player_start == True:
 
 		get_board("ai")
@@ -1034,6 +1055,8 @@ while game_in_progress == True:
 		coord = row + str(column)
 		fire(coord, "ai")
 		get_board()
+
+	# Computer goes first
 
 	elif player_start == False:
 
@@ -1048,12 +1071,14 @@ while game_in_progress == True:
 		coord = input("What coordinates should we return fire upon? ")
 		fire(coord)
 	
-	if symbols[ships_player["aircraft_carrier"]["symbol"]] not in board_ai and aircraft_carrier_sunk_ai == False:
+	# Have any ships been sunk?
+
+	if (symbols[ships_player["aircraft_carrier"]["symbol"]] not in board_ai) and (aircraft_carrier_sunk_ai == False):
 
 		print("We've sunk the enemy's aircraft carrier, Admiral!")
 		aircraft_carrier_sunk_ai = True
 
-	elif symbols[ships_player["aircraft_carrier"]["symbol"]] not in board_player and aircraft_carrier_sunk_player == False:
+	elif (symbols[ships_player["aircraft_carrier"]["symbol"]] not in board_player) and (aircraft_carrier_sunk_player == False):
 
 		print("Our aircraft carrier's sinking, Admiral!")
 		aircraft_carrier_sunk_player = True
