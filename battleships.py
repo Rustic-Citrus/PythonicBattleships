@@ -143,6 +143,12 @@ game_in_progress = True
 
 turn_counter = 1
 
+# Tracking coordinates that were already hit
+
+coord_hit_ai = []
+
+coord_hit_player = []
+
 # Keeping scores
 
 player_score = 0
@@ -287,90 +293,85 @@ def get_board(player="human"):
 
 def fire(coord, attacker="human"):
 
-	hit = False
-	success = False
+	x = coord[0]
+	y = int(coord[1:])
 
 	if attacker.lower() == "human":
 	
 		board_defender = board_ai
 
+		if coord in coord_hit_player:
+
+			print("MISFIRE!")
+			return "misfire"
+
 	elif attacker.lower() == "ai":
 
 		board_defender = board_player
 
-	x = coord[0]
-	y = int(coord[1:])
+		if coord in coord_hit_ai:
+
+			print("MISFIRE!")
+			return "misfire"
 
 	if board_defender[x][y] in symbols:
 
 		print("DIRECT HIT!")
-		hit = True
-		success = True
 		play_explosion()
+
+		if attacker == "human":
+	
+			try:
+
+				board_defender[x][y] = "X"
+				board_blank[x][y] = "!"
+				coord_hit_player.append(coord)
+
+			except:
+
+				print("SHOT UNSUCCESSFUL")
+				print(f"{coord} is not a valid coordinate")
+
+		elif attacker == "ai":
+
+			try:
+
+				board_defender[x][y] = "!"
+				coord_hit_ai.append(coord)
+
+			except:
+
+				print("SHOT UNSUCCESSFUL")
+				print(f"{coord} is not a valid coordinate")
 
 	elif board_defender[x][y] == "-":
 
 		print("MISS!")
-		success = True
 		play_splash()
 
-	elif board_defender[x][y] == "X" and hit == False:
+		if attacker == "human":
 
-		print("MISFIRE!")
-		success = False
+			try:
 
-	if success == False:
+				board_defender[x][y] = "X"
+				coord_hit_player.append(coord)
 
-		return success
+			except:
 
-	if attacker == "human" and hit == True:
-	
-		try:
+				print("SHOT UNSUCCESSFUL")
+				print(f"{coord} is not a valid coordinate")
 
-			board_defender[x][y] = "X"
-			board_blank[x][y] = "!"
+		elif attacker == "ai":
 
-		except:
+			try:
 
-			print("SHOT UNSUCCESSFUL")
-			print(f"{coord} is not a valid coordinate")
+				board_defender[x][y] = "X"
+				coord_hit_ai.append(coord)
 
-	elif attacker == "human" and hit == False:
+			except:
 
-		try:
-
-			board_defender[x][y] = "X"
-			board_blank[x][y] = "X"
-
-		except:
-
-			print("SHOT UNSUCCESSFUL")
-			print(f"{coord} is not a valid coordinate")
-
-	elif attacker == "ai" and hit == False:
-
-		try:
-
-			board_defender[x][y] = "X"
-
-		except:
-
-			print("SHOT UNSUCCESSFUL")
-			print(f"{coord} is not a valid coordinate")
-
-	elif attacker == "ai" and hit == True:
-
-		try:
-
-			board_defender[x][y] = "!"
-
-		except:
-
-			print("SHOT UNSUCCESSFUL")
-			print(f"{coord} is not a valid coordinate")
-		
-	return success
-
+				print("SHOT UNSUCCESSFUL")
+				print(f"{coord} is not a valid coordinate")
 
 def set_aircraft_carrier(coord, direction, player="player"):
 
@@ -1167,8 +1168,7 @@ while game_in_progress == True:
 		get_board("ai")
 		coord = input("What coordinates should we fire upon, Admiral? ")
 		fire(coord)
-
-		while fire(coord) == False:
+		if fire(coord) == "misfire":
 
 			print("It looks like we already fired on those coordinates, Sir.")
 			coord = input("What coordinates should we fire upon, Admiral? ")
@@ -1178,8 +1178,7 @@ while game_in_progress == True:
 		column = random.randint(1, 10)
 		coord = row + str(column)
 		fire(coord, "ai")
-
-		while fire(coord, "ai") == False:
+		if fire(coord, "ai") == "misfire":
 
 			row = letters[random.randint(0, 9)]
 			column = random.randint(1, 10)
@@ -1195,8 +1194,8 @@ while game_in_progress == True:
 		row = letters[random.randint(0, 9)]
 		column = random.randint(1, 10)
 		coord = row + str(column)
-		
-		while fire(coord, "ai") == False:
+		fire(coord, "ai")
+		if fire(coord, "ai") == "misfire":
 
 			row = letters[random.randint(0, 9)]
 			column = random.randint(1, 10)
@@ -1206,13 +1205,11 @@ while game_in_progress == True:
 
 		get_board("ai")
 		coord = input("What coordinates should we return fire upon? ")
-
-		while fire(coord) == False:
+		fire(coord)
+		if fire(coord) == "misfire":
 
 			print("It looks like we already fired on those coordinates, Sir.")
 			coord = input("What coordinates should we fire upon, Admiral? ")
-
-		fire(coord)
 	
 	# Have any of the computer's ships been sunk?
 
