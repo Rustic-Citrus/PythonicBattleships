@@ -2,9 +2,9 @@
 
 ## Introduction
 
-There are many ways to play Battleships. There's the classic game done on a grid, there're websites, and you can even buy it on Steam. Now, there is a way to play it with Python.
+There are many ways to play Battleships. There's the classic game done on a grid, there are websites, and you can even buy it on Steam. Now, there is a way to play it with Python.
 
-It's not perfect, and I'm still ironing out the bugs, but in its current state, it works.
+It is not perfect, and I am still ironing out the bugs, but in its current state, it works. More or less.
 
 
 ## Dependencies
