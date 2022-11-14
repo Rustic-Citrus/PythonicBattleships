@@ -1,4 +1,4 @@
-# Python Battleships
+# Pythonic Battleships
 
 ## Introduction
 
